@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer Guide — Setting → Driver Master</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --panel-alt: #f4f3ee;
+    --text: #1a1a1a;
+    --text-muted: #5b5b5b;
+    --accent: #2b5a8c;
+    --accent-soft: #e6effa;
+    --warn: #8a4b0a;
+    --warn-soft: #fdf1e1;
+    --rule: #d8d4c8;
+    --code-bg: #f3f1ea;
+    --code-text: #2b2b2b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15181c;
+      --panel: #1d2126;
+      --panel-alt: #232830;
+      --text: #e8e6e1;
+      --text-muted: #a5a39b;
+      --accent: #82b1e0;
+      --accent-soft: #1f2c3a;
+      --warn: #e6b27a;
+      --warn-soft: #2e2418;
+      --rule: #2d333c;
+      --code-bg: #11141a;
+      --code-text: #d8d6cf;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 48px 32px 96px; }
+  header.hero { border-bottom: 1px solid var(--rule); padding-bottom: 32px; margin-bottom: 40px; }
+  .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+  h1 { font-size: 32px; line-height: 1.25; margin: 0 0 16px; font-weight: 700; }
+  p.lead { font-size: 18px; line-height: 1.5; color: var(--text-muted); margin: 0; }
+  section { margin-bottom: 40px; }
+  h2 { font-size: 22px; margin: 0 0 16px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 14px; }
+  code { background: var(--code-bg); color: var(--code-text); padding: 2px 6px; border-radius: 4px; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px; border-radius: 8px; overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--panel-alt); font-weight: 600; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  .tag.post { background: var(--accent-soft); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="eyebrow">RMS Specification · Feature DRV</div>
+    <h1>Driver Master — Developer Guide</h1>
+    <p class="lead">Implementation reference for engineers working on Driver Master API, database stored procedures, and Next.js frontend components.</p>
+  </header>
+
+  <section>
+    <h2>1. Architecture Overview</h2>
+    <div class="card">
+      <p>Driver records belong to tenant companies in <code>dbo.DriverMaster</code>. When dispatches occur, <code>DriverId</code> is recorded against the stock transfer (<code>Sp_SaveTranferandTransferDetails</code>). Therefore, drivers are <strong>never hard deleted</strong>; instead, status is toggled via <code>IsActive</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. API Endpoints</h2>
+    <table>
+      <thead>
+        <tr><th>Method & Route</th><th>Permission</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="tag post">POST</span> <code>/Setting/GetDriverList</code></td><td><code>viewlist_driver_master</code></td><td>Loads full driver list for company. Full list returned.</td></tr>
+        <tr><td><span class="tag post">POST</span> <code>/Setting/GetDriverById</code></td><td><code>viewdetails_driver_master</code></td><td>Fetches driver by GUID for the edit modal.</td></tr>
+        <tr><td><span class="tag post">POST</span> <code>/Setting/AddEditDriver</code></td><td><code>create_driver_master</code> / <code>edit_driver_master</code></td><td>Creates or updates driver details and status.</td></tr>
+        <tr><td><span class="tag post">POST</span> <code>/Users/ValidateLicNo</code></td><td>None (public within tenant)</td><td>Live debounced validation for driving license duplication.</td></tr>
+        <tr><td><span class="tag post">POST</span> <code>/Setting/DeleteDriver</code></td><td>Blocked</td><td>Prohibited by policy to maintain transfer audit integrity.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. Frontend File Organization</h2>
+    <pre>RMS_NextJS/src/pages-sections/vendor-dashboard/driver-master/
+├── page-view/
+│   └── driver-master.tsx         # Main page view with search, filter, table, header
+├── driver-modal.tsx              # Add / Edit dialog with live license check & discard confirm
+├── driver-row.tsx                # Desktop table row with avatar, license, status, actions
+├── driver-card.tsx               # Mobile responsive card layout
+├── driver-status.tsx             # Active / Inactive status chip
+├── driver-status-confirm.tsx     # Confirmation dialog for deactivation / activation
+└── table-heading.ts              # Column definitions</pre>
+  </section>
+
+  <section>
+    <h2>4. Key UX Rules</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Page Header:</strong> Displays breadcrumb, title "Driver Master", Refresh icon, About toggle, and "＋ Add Driver". Omits redundant short description.</li>
+        <li><strong>Validation:</strong> Live debounced license duplicate check informs user before submission.</li>
+        <li><strong>Confirmations:</strong> Deactivating a driver requires explicit confirmation explaining that staff won't be able to select the driver for new transfers.</li>
+        <li><strong>Toast Messages:</strong> Accurately reports "Driver created successfully" and "Driver updated successfully" (fixes legacy bug where it announced "Vehicle updated successfully").</li>
+      </ul>
+    </div>
+  </section>
+</div>
+</body>
+</html>

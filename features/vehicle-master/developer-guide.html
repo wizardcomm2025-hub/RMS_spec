@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer guide — Setting → Vehicle Master</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --panel-alt: #f4f3ee;
+    --text: #1a1a1a;
+    --text-muted: #5b5b5b;
+    --accent: #2b5a8c;
+    --accent-soft: #e6effa;
+    --warn: #8a4b0a;
+    --warn-soft: #fdf1e1;
+    --rule: #d8d4c8;
+    --code-bg: #f3f1ea;
+    --code-text: #2b2b2b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15181c;
+      --panel: #1d2126;
+      --panel-alt: #232830;
+      --text: #e8e6e1;
+      --text-muted: #a5a39b;
+      --accent: #82b1e0;
+      --accent-soft: #1f2c3a;
+      --warn: #e6b27a;
+      --warn-soft: #2e2418;
+      --rule: #2d333c;
+      --code-bg: #11141a;
+      --code-text: #d8d6cf;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 48px 32px 96px; }
+  header.hero { border-bottom: 1px solid var(--rule); padding-bottom: 32px; margin-bottom: 40px; }
+  .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+  h1 { font-size: 32px; line-height: 1.25; margin: 0 0 16px; font-weight: 700; }
+  p.lead { font-size: 18px; color: var(--text-muted); margin: 0; }
+  section { margin-bottom: 48px; }
+  h2 { font-size: 22px; margin: 0 0 16px; font-weight: 600; }
+  h3 { font-size: 17px; margin: 24px 0 8px; font-weight: 600; }
+  .panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+  code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9em; background: var(--code-bg); color: var(--code-text); padding: 2px 6px; border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 600; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="eyebrow">RMS Developer Guide · Setting Module</div>
+    <h1>Vehicle Master</h1>
+    <p class="lead">Vehicles used for deliveries and inter-location stock transfers.</p>
+  </header>
+
+  <section>
+    <h2>What this feature is</h2>
+    <div class="panel">
+      <p>A <strong>Vehicle</strong> is an active transport unit (car, van, truck) registered in the company's Tenant DB table <code>dbo.VehicleMaster</code>. Each vehicle has a unique Registration Number (<code>RegNo</code>) and a Manufacturer / Brand Name (<code>BrandName</code>). Supplying locations select active vehicles during Inbound Requisitions and Stock Transfers.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What matters where you sit</h2>
+
+    <h3>RMS API</h3>
+    <p>Endpoints in <code>SettingController</code> and <code>UsersController</code> are secured with <code>[CompanyAuthorize]</code>. Permissions required: <code>create_vehicle_master</code> (add) and <code>edit_vehicle_master</code> (edit, toggle status). Hard delete is blocked; failures return standard <code>{ status: false, message: "...", data: null }</code> with sanitized user-facing messages.</p>
+
+    <h3>Tenant DB</h3>
+    <p>Rows are stored in <code>dbo.VehicleMaster</code> scoped by <code>CompanyId</code>. Status is controlled via <code>IsActive</code> (1 = Active, 0 = Inactive). Updates use UTC timestamps (<code>GETUTCDATE()</code>) and concurrency edit token checking.</p>
+
+    <h3>Admin Dashboard (Next.js)</h3>
+    <p>The screen lives at <code>src/pages-sections/vendor-dashboard/vehicle-master/</code> and follows the standard §12 list recipe. It uses <code>PageHeader</code> with an About panel (omitting the duplicate short description), real-time client search across registration and manufacturer, an Inactive filter, and confirmation modals for deactivation.</p>
+  </section>
+</div>
+</body>
+</html>
