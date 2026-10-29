@@ -15,6 +15,8 @@ Route: `RMS_NextJS/src/app/(admin-dashboard)/admin/(setting)/vehicle/` · View: 
 
 ## 2. Columns / fields
 
+Alignment (UI_UX_STANDARDS §7, strict): badge columns (status, type, requisition) are centred; Actions is the last column and right-aligned.
+
 | Column | Priority | Content |
 |---|:-:|---|
 | Registration Number | P1 | Registration number, monospace-like weight 600, uppercase |

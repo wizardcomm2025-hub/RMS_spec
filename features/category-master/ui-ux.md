@@ -9,12 +9,15 @@ Route: `RMS_NextJS/src/app/(admin-dashboard)/admin/(setting)/stock-group/` (unch
 - `PageHeader`: breadcrumb "Setting › Category Master", title "Category Master", ⓘ About, ⟳ Refresh, **＋ Add Category** (needs `create_item_category`).
 - Description: none (omitted to avoid duplicating the About panel).
 - About: *"Each inventory type keeps its own categories, in two levels. A sub-category sits under a main category of the same type. Items, recipes, stock checks and food-cost reports use these categories. See Raw Material and Recipe."* (links: Raw Material, Recipe). The Finished Goods note (*"Finished Goods categories are for stock & food-cost reporting only and are not shown on the POS."*) stays as an info line shown when the Category Type filter is Finished Goods.
+- Finished Goods note (2026-10-29): shown between the filter bar and the list **only when Category type = Finished Goods** (never for Semi-Finished Items or Raw Material). Green-tinted note with a store icon and a `success.main` left edge; title **"Not shown on the POS"**, text *"Finished Goods categories are used only for stock and food-cost reports. Where a finished item appears on the POS menu is set in Menu Section."* — "Menu Section" links to Inventory → Menu Section.
 - Filter bar: Search ("Search category or code...") · Category Type ▾ (All + company types) · Status ▾ (All / Active / Inactive) · "Clear filters" (only when a filter is set). The old type tabs are replaced by the Category Type filter.
 - List inside a Card; footer "Showing X of Y categories". **No pagination** — the API returns the whole list (no server-side paging), so this page differs from the §12 recipe here (decided 2026-10-28).
 - Browser tab title "Category Master - RMS".
 - The Menu Section page's About text mentions "Category Master" and links it to `/setting/item_category` (the friendly URL rewritten to `/admin/stock-group`) (D12).
 
 ## 2. Columns / fields
+
+Alignment (UI_UX_STANDARDS §7, strict): badge columns (status, type, requisition) are centred; Actions is the last column and right-aligned.
 
 **List**
 

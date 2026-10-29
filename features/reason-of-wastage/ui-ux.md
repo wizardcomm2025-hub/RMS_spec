@@ -14,6 +14,8 @@ Route: `RMS_NextJS/src/app/(admin-dashboard)/admin/(setting)/wastage-reason/` (r
 
 ## 2. Columns / fields
 
+Alignment (UI_UX_STANDARDS §7, strict): badge columns (status, type, requisition) are centred; Actions is the last column and right-aligned.
+
 | Column | Priority | Content |
 |---|:-:|---|
 | Reason | P1 | Text, weight 600, wraps (`wordBreak: break-word`) |

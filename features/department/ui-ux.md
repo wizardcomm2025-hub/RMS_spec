@@ -15,6 +15,8 @@ Route: `RMS_NextJS/src/app/(admin-dashboard)/admin/(setting)/department/` · Vie
 
 ## 2. Columns / fields
 
+Alignment (UI_UX_STANDARDS §7, strict): badge columns (status, type, requisition) are centred; Actions is the last column and right-aligned.
+
 | Column | Priority | Content |
 |---|:-:|---|
 | Department Name | P1 | Name, weight 600 |

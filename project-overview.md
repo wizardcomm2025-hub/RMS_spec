@@ -38,6 +38,8 @@ Each module has a plain-language section in `../RMS_API/specs/MODULES.md`. Modul
 - **Setting → Reason of Wastage** — see [features/reason-of-wastage/](./features/reason-of-wastage/).
 - **Setting → Vehicle Master** — see [features/vehicle-master/](./features/vehicle-master/).
 - **Setting → Driver Master** — see [features/driver-master/](./features/driver-master/).
+- **Inventory → Menu Section** — see [features/menu-section/](./features/menu-section/).
+- **Inventory → Brand and Sub Brand** — see [features/brands/](./features/brands/).
 
 <!-- TODO: add one line per module as it gets a spec here. -->
 
@@ -121,6 +123,8 @@ These are facts from the code (2026-10-28). Developer test cases use them as exp
 | Reason of Wastage | A reason staff pick when they write off stock (Expired, Spoiled), `dbo.WastageReasonMaster`, per company. Each `Wastage` line keeps its reason; switched-off reasons can't be picked. Managed in Setting → Reason of Wastage. |
 | Vehicle | A company car, van or truck used to dispatch stock, `dbo.VehicleMaster`, per company; registration number unique. Managed in Setting → Vehicle Master. |
 | Driver | A person who drives dispatched stock, `dbo.DriverMaster`, per company; licence number unique. Managed in Setting → Driver Master. |
+| Menu Section | A group on the POS menu (Starters, Beverages), `dbo.MenuSection`, per company. Each finished item (recipe) sits in one section (`StockItem.MenuSectionId`). Managed in Inventory → Menu Section. |
+| Brand / Sub-brand | Manufacturer name (`dbo.StockType`) and a product line inside it (`dbo.StockSubType`), per company; optional on Raw Material. Managed in Inventory → Brand / Sub Brand. |
 | Active / Inactive / Deleted | Row state: `IsActive=1, IsDeleted=0` active; `IsActive=0, IsDeleted=0` inactive (hidden from other screens, shown on its own setup screen); `IsDeleted=1` deleted. |
 | Requisition | A request from a location for stock. |
 | POS Outlet | A location that runs point of sale. |

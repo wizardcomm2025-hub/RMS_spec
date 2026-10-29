@@ -15,6 +15,8 @@ Route: `RMS_NextJS/src/app/(admin-dashboard)/admin/(setting)/warehouse/` · View
 
 ## 2. Columns / fields
 
+Alignment (UI_UX_STANDARDS §7, strict): badge columns (status, type, requisition) are centred; Actions is the last column and right-aligned.
+
 **List**
 
 | Column | Priority | Content |
