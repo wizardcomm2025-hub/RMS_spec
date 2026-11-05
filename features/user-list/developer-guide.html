@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer guide — User Management → User List</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --panel-alt: #f4f3ee;
+    --text: #1a1a1a;
+    --text-muted: #5b5b5b;
+    --accent: #2b5a8c;
+    --accent-soft: #e6effa;
+    --warn: #8a4b0a;
+    --warn-soft: #fdf1e1;
+    --todo: #b08b00;
+    --todo-soft: #fdf6dd;
+    --rule: #d8d4c8;
+    --code-bg: #f3f1ea;
+    --code-text: #2b2b2b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15181c;
+      --panel: #1d2126;
+      --panel-alt: #232830;
+      --text: #e8e6e1;
+      --text-muted: #a5a39b;
+      --accent: #82b1e0;
+      --accent-soft: #1f2c3a;
+      --warn: #e6b27a;
+      --warn-soft: #2e2418;
+      --todo: #e6c764;
+      --todo-soft: #2a2517;
+      --rule: #2d333c;
+      --code-bg: #11141a;
+      --code-text: #d8d6cf;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+  header.hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 64ch;
+    margin: 0;
+  }
+  h2 {
+    font-size: 22px;
+    margin: 48px 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  h3 {
+    font-size: 16px;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 120ms ease; }
+  a:hover { border-bottom-color: var(--accent); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.92em;
+  }
+
+  /* TODO callout — visually prominent so it can't be left in by accident */
+  .todo {
+    background: var(--todo-soft);
+    border-left: 4px solid var(--todo);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 0 0 16px;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+  .todo::before {
+    content: "TODO";
+    display: inline-block;
+    background: var(--todo);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 10px;
+    vertical-align: 1px;
+  }
+
+  .surfaces {
+    display: grid;
+    gap: 14px;
+    margin: 0 0 28px;
+  }
+  .surface {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: var(--shadow);
+  }
+  .surface h3 {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .surface h3 .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .surface.backend h3 .tag { background: var(--accent-soft); color: var(--accent); }
+  .surface.data    h3 .tag { background: var(--panel-alt); color: var(--text-muted); }
+  .surface.client  h3 .tag { background: var(--warn-soft); color: var(--warn); }
+
+  .meta {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .meta a { color: var(--text-muted); border-bottom: 1px dotted var(--rule); }
+  .meta a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .placeholder {
+    background: var(--warn-soft);
+    color: var(--warn);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">Feature developer guide</div>
+      <h1>User Management → User List</h1>
+      <p class="lede">
+        Plain-language onboarding for engineers picking up work on this feature. The structured index is in
+        <a href="./README.md"><code>README.md</code></a>; the use-case specs are the
+        <code>NN-&lt;use-case&gt;.md</code> files in this folder. This guide points you at what to read.
+      </p>
+    </header>
+
+    <h2>What this feature does</h2>
+    <p>Users are the people who sign in to RMS. This screen lists a company's users page by page, adds and edits them, gives them one or more roles and their locations, and switches them on or off. Users are never deleted.</p>
+
+    <h2>v1 scope</h2>
+    <p>Close the role-assignment hole (anyone could give anyone, themselves included, the Admin role or another company's role), stop password hashes and new passwords reaching the browser, move every rule to the server, protect the last admin and your own account, and rebuild the page on the list recipe with server paging. See <a href="./README.md"><code>README.md</code></a>.</p>
+
+    <h2>How it works end-to-end</h2>
+    <p>The page asks <code>/Users/GetUserList</code> for one page at a time (search and status go to the server). The dialog saves in two steps: details through <code>Sp_SaveUser</code>, then roles through <code>Sp_SetUserRoles</code>. Status changes use <code>Sp_SetUserActive</code>. The three procedures share a per-company lock, so the "last active admin" check can't be raced. A role change or a deactivation sets <code>IsForcelogin</code>, so the user must sign in again, and clears their cached permissions.</p>
+
+    <h2>What matters where you sit</h2>
+    <div class="surfaces">
+      <section class="surface backend"><h3>RMS API <span class="tag">server</span></h3><p>Read <a href="./02-add-or-edit-user.md"><code>02</code></a> to <a href="./04-switch-user-on-off.md"><code>04</code></a> and <a href="./api-contract.md"><code>api-contract.md</code></a>. <code>UsersController</code> has one save path (<code>SaveUserAsync</code>) for <code>AddEditUser</code>, <code>AddNewUser</code> and <code>UpdateUser</code>. <code>ValidateUserName</code> stays <code>[Authorize]</code> because SuperAdmin company creation calls it.</p></section>
+      <section class="surface data"><h3>Data · Tenant DB <span class="tag">storage</span></h3><p>Two new procedures, three changed, no schema change: <a href="./data-model.md"><code>data-model.md</code></a>. <code>SP_AddEditUser</code> is left alone because customers are created through it.</p></section>
+      <section class="surface data"><h3>Data · Central DB <span class="tag">storage</span></h3><p>Not touched.</p></section>
+      <section class="surface client"><h3>Integrations <span class="tag">external</span></h3><p>Not touched. Any mobile or POS client that called <code>DeleteUser</code> or <code>AddEditAssignRole</code> without the right permission is now refused.</p></section>
+      <section class="surface client"><h3>Admin dashboard <span class="tag">client</span></h3><p>Everything visual is in <a href="./ui-ux.md"><code>ui-ux.md</code></a>. The account menu's "Profile" reuses the same dialog: your own roles show read-only. Tester cases: <a href="./test-cases/README.md"><code>test-cases/</code></a>.</p></section>
+    </div>
+  </main>
+</body>
+</html>
