@@ -17,3 +17,13 @@ Tenant DB. Objects in `RMS_API/DBSCRIPT/`. **No table schema change.**
 | `SP/dbo.Sp_GetStockCheckSheet` (**new**) | `(@CompanyId, @UserId, @WarehouseId, @InventoryTypeId)` → one row per item: id, name, group, main / alt unit, conversion, system qty (main), last count qty (main), last count at, last count by. Empty when the location isn't the user's |
 | `SP/dbo.Sp_SaveStockCounts` (**new**) | `(@CompanyId, @UserId, @WarehouseId, @Lines XML)`; codes `ok / BadLocation / NoLine / BadQty / BadItem / BadUnit`; returns `Response, Saved, DetailItem, DetailValue`. One transaction, `sp_getapplock SCK_<WarehouseId>` |
 | `SP/dbo.SP_AddEditStockCheck`, `SP/dbo.SP_SaveStockCheckIndvNew` | Not called by the API any more (kept in the database; D3) |
+
+## Times in UTC (use case 03, 2026-11-18)
+| Column | Before | From now on |
+|---|---|---|
+| `StockCheck.StockCheckDate`, `CreatedAt` | server clock (`GETDATE()`) | **UTC** (`GETUTCDATE()`) for new rows |
+| `StockCheck.StockCheckTime` | server time of day | UTC time of day |
+| Stock ledger `MoveDate` of a count | server date | **IST date** |
+| `Stock.CreatedAt` / `UpdatedAt` | server clock | unchanged (out of the pilot) |
+
+Procedures: `Sp_SaveStockCounts` (save), `Sp_GetStockCheckReport` (IST From–To → UTC range), `Sp_GetDashboardAttention` (IST today → UTC range, stock-check part only). `Sp_GetStockCheckSheet` is unchanged; the UI converts. No table change.

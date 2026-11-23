@@ -15,3 +15,11 @@ Defaults: `Origin: HOST-A`, `Authorization: Bearer TOKEN_U1`.
 | `SCK-ALL-D01` | Auth | none / expired / tampered / SuperAdmin | each endpoint | 401 |
 | `SCK-ALL-D02` | Permission | U-STAFF | each endpoint | "You don't have permission to perform this action." |
 | `SCK-ALL-D03` | Double submit | default | same save twice quickly | Two count rows, stock = last count (idempotent value) |
+
+## 03 — Times in UTC
+| ID | Check | Expected |
+|---|---|---|
+| `SC-03-D01` | After `SaveStockCounts`, read the new `StockCheck` row's `StockCheckDate, CreatedAt, StockCheckTime` | Equal to `GETUTCDATE()` at save (±1 min), not `GETDATE()` |
+| `SC-03-D02` | Stock ledger row of that count | `MoveDate` = IST date of the save |
+| `SC-03-D03` | `GetStockCheckReport` with `fromDate = toDate = today (IST)` at 02:00 IST | The 01:30 IST count is returned |
+| `SC-03-D04` | `GetStockCheckSheet` response | `lastCountAt` = the UTC value, no offset |

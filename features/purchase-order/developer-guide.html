@@ -204,6 +204,8 @@
       <section class="surface client"><h3>Integrations <span class="tag">external</span></h3><p>Submit notifications as today.</p></section>
       <section class="surface client"><h3>Admin dashboard <span class="tag">client</span></h3><p><a href="./ui-ux.md"><code>ui-ux.md</code></a>. PO Receive reads POs; keep its calls working. Tester cases: <a href="./test-cases/README.md"><code>test-cases/</code></a>.</p></section>
     </div>
+    <h2>Email to vendor (use case 05, 2026-11-17)</h2>
+    <p><code>GetPoEmailDefaults</code> returns the prefilled To / CC / subject / message from <code>Sp_GetPoEmailDefaults</code>. <code>EmailPurchaseOrder</code> re-checks the PO (company, Submitted) and builds the PDF on the server from the saved PO with <code>SelectPdf.HtmlToPdf</code>. It sends through MailKit using the Central <code>PlatformNotificationSecret</code> (EmailTemplate), with the restaurant as From name and the sender as Reply-To, and logs every attempt in <code>PurchaseOrderEmailLog</code>. The old <code>Notification/SendPONotification</code> link email is not used.</p>
   </main>
 </body>
 </html>

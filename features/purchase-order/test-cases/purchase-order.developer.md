@@ -17,3 +17,17 @@ Defaults: `Origin: HOST-A`, `Authorization: Bearer TOKEN_ADMIN`.
 | `PO-01-D01` | Cross-company read | default | `GetGetPurchaseOrderDetailsbyId` PB | Not found |
 | `PO-01-D02` | Paging | default | `GetPurchaseOrderList` page 2 size 10 with filters | Exact total; only CO-A |
 | `PO-02-D09` | Auth | no token; `TOKEN_SA` | every endpoint above | 401 |
+
+## 05 — Email to vendor
+| ID | Category | Request | Expected |
+|---|---|---|---|
+| `PO-05-D01` | Auth | No / expired / tampered / SuperAdmin token on both endpoints | 401 |
+| `PO-05-D02` | Company | `GetPoEmailDefaults` / `EmailPurchaseOrder` with CO-B's `poId` | "Purchase order not found"; nothing sent or logged |
+| `PO-05-D03` | Status | Draft or Cancelled PO | "Only submitted purchase orders can be emailed." |
+| `PO-05-D04` | Permission | U-VIEW (no `create_purchase_order`) | "You don't have permission to perform this action." |
+| `PO-05-D05` | Garbage | `toEmails` empty; 11 addresses; `"a@b"`; subject 201 chars; message 2001 chars | The matching messages; nothing sent |
+| `PO-05-D06` | Injection | message `<script>alert(1)</script>` | Arrives as text, not HTML |
+| `PO-05-D07` | Over-posting | body with `fromEmail`, `companyId`, `attachmentHtml` | Ignored; PDF built from the saved PO |
+| `PO-05-D08` | Mail not set up | Central `PlatformNotificationSecret` EmailTemplate inactive | "Email isn't set up yet. Contact support."; log row `IsSuccess = 0` |
+| `PO-05-D09` | SMTP failure | wrong SMTP password | "Couldn't send the email. Please try again."; log row with `ErrorMessage` |
+| `PO-05-D10` | No change | send twice | Two log rows; `PurchaseOrderMaster.UpdatedAt` and status unchanged |

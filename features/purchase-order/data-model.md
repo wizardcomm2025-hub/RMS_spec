@@ -25,3 +25,29 @@ Tenant DB. **No table schema change.** One guarded data script (new status). Obj
 | `SP/dbo.Sp_GetPurchaseOrderState` (**new**) | `PoId, PoNumber, UpdatedAt, StatusCode, HasReceipt` for the edit screen |
 | `SP/dbo.Sp_ReleasePoRequisitionLines` (**new**, internal) | Reads `#ReleaseReq`; restores each requisition line's previous status, logs "Released from purchase order", clears `PoLineItemId`, resets `POGenarated`. Called by save, line delete, PO delete and cancel |
 | `UDF/dbo.fn_GetStatusId` (**new**) | Status id by StatusMaster code |
+
+## Email to vendor (use case 05, 2026-11-17)
+
+### New table `dbo.PurchaseOrderEmailLog` (tenant)
+| Column | Type | Note |
+|---|---|---|
+| `PurchaseOrderEmailLogId` | bigint identity, PK | |
+| `CompanyId` | bigint, not null | |
+| `PoId` | uniqueidentifier, not null | `PurchaseOrderMaster.PoId` |
+| `ToEmails` | nvarchar(1100), not null | comma-separated |
+| `CcEmails` | nvarchar(1100), null | |
+| `Subject` | nvarchar(200), not null | |
+| `IsSuccess` | bit, not null | |
+| `ErrorMessage` | nvarchar(500), null | SMTP error, trimmed |
+| `SentBy` | uniqueidentifier, not null | user |
+| `SentAt` | datetime, not null | `GETDATE()` default |
+
+Index `IX_PurchaseOrderEmailLog_Po (CompanyId, PoId, SentAt DESC)`.
+
+### New procedures
+| Procedure | In | Out |
+|---|---|---|
+| `Sp_GetPoEmailDefaults` | `@CompanyId, @UserId, @PoId` | One row: `PoNumber, VendorName, StatusCode, VendorEmails` (active contacts, comma-separated), `CreatorEmail, UserEmail, CompanyName, CompanyEmail, LastEmailedAt, LastEmailedTo` (last successful send). No row = not found or another company's PO |
+| `Sp_SavePoEmailLog` | `@CompanyId, @UserId, @PoId, @ToEmails, @CcEmails, @Subject, @IsSuccess, @ErrorMessage` | `Response` = `ok` |
+
+Company details for the PDF header (`Name, Address1, Address2, PIN, GSTNumber`) come from `dbo.Company` in the same procedure as `CompanyName, CompanyAddress, CompanyGstin`.

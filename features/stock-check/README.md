@@ -12,6 +12,7 @@ Feature code: `SCK`
 |---|---|---|
 | 01 | [`01-count-sheet.md`](./01-count-sheet.md) | Open the count sheet for a location: items with system stock, last count and variance |
 | 02 | [`02-save-counts.md`](./02-save-counts.md) | Save the counted items (all entered rows, or one row) and set stock |
+| 03 | [`03-utc-time.md`](./03-utc-time.md) | Count times saved in UTC, shown in IST (pilot, 2026-11-18 — **built; SQL not yet run; testing deferred**) |
 
 ## Defects this feature fixes (found 2026-11-03)
 
@@ -37,6 +38,9 @@ Feature code: `SCK`
 | D1 | Only the user's locations (`UserWarehouseMapping`, active, company); only active items mapped to that location (`ItemWarehouseMap`) of the chosen inventory type | 2026-11-03 (default) |
 | D2 | Count rows are stored in the **main unit** from now on, so the report and consumption read one unit | 2026-11-03 (default) |
 | D3 | Old endpoints `AddEditStockCheck`, `SaveStockCheckIndv`, `GetStockCheckItemListMarge` kept for other callers, but company-guarded, permission-checked and routed through the new safe save | 2026-11-03 (default) |
+| Q5 | **Save with `GETUTCDATE()`, show in IST** (platform rule). **Stock Check is the pilot**; other modules later. Replaces Q4's "server time" | 2026-11-18 |
+| Q6 | Rows saved before the change are **left as they are** (no conversion script) | 2026-11-18 |
+| Q7 | "Today" and date filters use the **IST calendar day**, turned into a UTC range in SQL | 2026-11-18 |
 
 ## Out of scope
 Count sessions / approvals; backdated counts; correcting stock already wiped by S1 (the pre-check lists suspects); the Stock Check Report screen.

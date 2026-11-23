@@ -23,3 +23,19 @@
 | `PO-UI-T10` | UI | Look at the Actions of a Draft, a Submitted (nothing received), a Submitted with goods received, and a Cancelled PO. | Draft: View · Edit · Delete. Submitted: View · Cancel. Received: Cancel greyed, hover "Goods received against this PO — can't be cancelled." Cancelled: View only. |
 | `PO-UI-T11` | UI | List → date filter: pick 01/Oct and 31/Oct, Apply; then a single day, Apply; then Clear, Apply. | Each time the list reloads for that range / day / all dates. |
 | `PO-UI-T12` | UI | View a PO with 2 lines. | Dark title "Purchase order PO/…", status chip, total with separators, columns Item before Description, Amount per line, outlined Close. |
+
+## 05 — Email to vendor
+| ID | Steps | Expected |
+|---|---|---|
+| `PO-05-T01` | Open the list as U-ADMIN | ✉ "Email to vendor" on Submitted rows only; not on Draft or Cancelled |
+| `PO-05-T02` | Click ✉ on a Submitted PO whose vendor has an email | Dialog "Email purchase order"; To = vendor email; CC = PO creator; subject "Purchase order {no} from {restaurant}"; 📎 `PO-…pdf` |
+| `PO-05-T03` | Click Send | Snackbar "Purchase order emailed to vendor"; the vendor mailbox gets the mail with the PDF; the PDF shows restaurant, vendor, lines and total |
+| `PO-05-T04` | Open the dialog again | "Last emailed {date time} to {email}" |
+| `PO-05-T05` | Vendor with no email | Info "This vendor has no email. Add one in Vendor, or type an address."; Send disabled; type an address → Send enabled |
+| `PO-05-T06` | Type `abc@` in To and Send | "Enter a valid email address: abc@"; nothing sent |
+| `PO-05-T07` | Remove all To chips | "Add at least one email address" |
+| `PO-05-T08` | Clear subject | "Enter a subject" |
+| `PO-05-T09` | Type in Message, then ✕ | "Discard changes?" → Keep editing keeps the text |
+| `PO-05-T10` | View dialog of a Submitted PO | "Email to vendor" button in the footer opens the same dialog |
+| `PO-05-T11` | Phone width (360 px) | Full-screen dialog, chips wrap, no sideways scroll |
+| `PO-05-T12` | User without `create_purchase_order` | No ✉ action and no footer button |

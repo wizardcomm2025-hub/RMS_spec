@@ -7,7 +7,7 @@ A user with `create_recipe` adds a recipe; with `edit_recipe` edits one. One sav
 ## Main flow
 
 1. "＋ Add Recipe" → pick the type (Semi-Finished / Finished), then the fields as today: name, alias, SKU, reference no, category / sub-category, batch quantity + unit, yield %, shelf life, (Finished) menu section, POS unit, conversion, price, veg, image, POS item; description, remarks, used-by locations; ingredient lines (search raw materials and semi-finished recipes, quantity, unit, used / wastage).
-2. Save: the server checks permission, fields (Q5), name, category, menu section, locations, every ingredient (company's, active or already on the recipe, not finished, not the recipe itself, no loop — Q3), the unit lock and the edit token; then saves all at once: changed lines updated, new lines added, removed lines switched off; locations added / removed **without touching stock rows of other locations**.
+2. Save: the server checks permission, fields (Q5), name, category (optional — checked only when one is picked; none is stored as the empty GUID), menu section, locations, every ingredient (company's, active or already on the recipe, not finished, not the recipe itself, no loop — Q3), the unit lock and the edit token; then saves all at once: changed lines updated, new lines added, removed lines switched off; locations added / removed **without touching stock rows of other locations**.
 3. Cost: see [03](./03-recipe-cost.md).
 
 ## Alternative flows

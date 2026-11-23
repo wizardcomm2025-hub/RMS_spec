@@ -12,3 +12,12 @@
 | `SCK-02-T04` | 02 | Count with note "spillage"; save; open Stock Check Report. | Note shown in the report. |
 | `SCK-02-T05` | 02 | Footer button with no counts entered. | Button disabled. |
 | `SCK-UI-T01` | UI | Page at 360 px. | Phone cards; no page sideways scroll. |
+
+## 03 — Times in IST
+| ID | Steps | Expected |
+|---|---|---|
+| `SC-03-T01` | Save a count at a known IST time (e.g. 15:40) | Last count shows today's date and 15:40 (company format) |
+| `SC-03-T02` | Open Stock Check Report for today | The count is listed with Counted at 15:40; Export CSV shows the same date and time |
+| `SC-03-T03` | Save a count between 00:00 and 05:30 IST; report for that date | Listed on that IST date, not the day before |
+| `SC-03-T04` | Dashboard after counting a location today | That location is no longer in "not counted today" |
+| `SC-03-T05` | Set the PC time zone to UTC, reload | Times still show in IST |

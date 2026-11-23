@@ -144,6 +144,8 @@ These are facts from the code (2026-10-28). Developer test cases use them as exp
 | Sent value / short value | In the Transfer Report: sent quantity, or sent − received once received, in the main unit × today's `fn_GetItemUnitCost`. |
 | Wastage value | In the Wastage Report: wasted quantity in the main unit × today's `fn_GetItemUnitCost`. |
 | Barcode status | In the Barcode Report, by today's date: *Used up* = nothing left; *Expired* = stock left past its expiry date; *Expiring soon* = stock left expiring within 30 days. |
+| UTC time rule | Timestamps are saved with `GETUTCDATE()` and shown in IST (UTC+05:30); "today" and date filters use the IST day. Piloted on Stock Check (2026-11-18); other modules still save server time. |
+| Default tax group | The one active tax group (`TaxSettingsMaster.IsDefault = 1`) whose active components every POS bill charges. |
 | Stock ledger / opening stock | `dbo.StockLedger`: one row per change to `dbo.Stock` (signed quantity in the main unit, type, document, business date), written by trigger `trg_Stock_Ledger`, seeded with an *Opening* row per item + location on switch-on. Opening stock on a date = Σ ledger before it; closing = opening + movements in the period. |
 | Onboarding (setup incomplete) | Central `CompanyOnboarding` row per company being onboarded; steps Company → Register → Plan → Email → Payment. *Setup incomplete* = a required step failed after the company was created; **Retry** resumes from it. New admins get a temporary password and `User.MustChangePassword = 1` until they set their own. |
 | Needs attention / Right now / This period | On the Dashboard: *Needs attention* = work waiting now, per the user's permissions; a *Right now* figure ignores the dates; a *This period* figure follows them. |

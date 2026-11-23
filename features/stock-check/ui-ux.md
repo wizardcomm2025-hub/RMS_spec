@@ -21,3 +21,9 @@ Sticky footer:  3 items counted                         [Discard] [Save counts (
 | F5 | Item + Group columns pinned on horizontal scroll; header row sticky |
 | F6 | Phone (< 600 px): one card per item (name, group, system, last count, count + unit, variance, note, Save) |
 | F7 | States: skeleton on load, no-location / no-items / error messages (use case 01), LinearProgress on reload |
+
+## Times in IST (use case 03, 2026-11-18)
+1. **Where:** Stock Check list → Last count ("{date} · {time} · {user}"); Stock Check Report → Counted at (table, phone card, CSV).
+2. **How:** a shared helper `utcToIst()` (`src/utils/ist-time.ts`) reads the API value as UTC and returns a date whose clock reads IST; the existing `userDateFormat` / `userTimeFormat` format it. No new text, layout or states.
+3. **Responsive / feedback / accessibility:** unchanged.
+4. **Template impact:** none; the helper is new and only these two screens use it in the pilot.

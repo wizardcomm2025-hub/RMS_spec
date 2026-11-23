@@ -47,3 +47,5 @@ Feature code: `SCR`
 
 ## Out of scope
 System quantity and variance (Q2); filter by the person who counted; approving or editing counts; stock movement over a period (Opening Stock Report); the same exact-date comparison in the Requisition consumption functions (`fun_GetConsumption`, `fun_GetConsumption_Main`), which is a separate fix.
+
+> 2026-11-18: counts saved from now on are in UTC; this report's From–To uses the IST day and Counted at shows IST. See [stock-check 03](../stock-check/03-utc-time.md).

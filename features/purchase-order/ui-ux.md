@@ -45,3 +45,68 @@ The date range picker edits a draft; the list reloads only on **Apply**. Picking
 
 ## Dates (2026-11-02)
 Every PO date — list rows, phone cards, the form's date picker and read-only date, the view popup — uses the **company's date format** (`useDatePicker().userDateFormat` / `dateFormat`, set per company), the same as the list's date filter. The fixed `dd/MMM/yyyy` helper (`formatDate`) is no longer used for display on these screens; it is still used for the save payload, which the API already parses.
+
+## Email to vendor (use case 05, 2026-11-17)
+
+### 1. Where it appears
+- List row and phone card actions of a **Submitted** PO: an icon button ✉ with the tooltip "Email to vendor" (`aria-label` "Email PO/2026-27/0001 to vendor").
+- View dialog footer, left of Close: outlined button **Email to vendor** (Submitted only).
+- Hidden without `create_purchase_order`.
+
+### 2. Dialog (standard dialog: plain header, no dark bar)
+```
+┌ Email purchase order ─────────────────────────────────── ✕ ┐
+│ PO/2026-27/0001 · Fresh Farms Pvt Ltd                       │
+│ To *      [ orders@freshfarms.in ✕ ][ type an email…      ] │
+│ CC        [ ravi@myrestaurant.com ✕ ][                    ] │
+│ Subject * [ Purchase order PO/2026-27/0001 from Spice Hub ] │
+│ Message   [ Dear Fresh Farms Pvt Ltd,                      ] │
+│           [ Please find attached our purchase order …      ] │
+│ 📎 PO-2026-27-0001.pdf                                      │
+│ Last emailed 15/11/2026 10:42 to orders@freshfarms.in       │
+│                                          [Cancel]  [Send]   │
+└─────────────────────────────────────────────────────────────┘
+```
+- To / CC: MUI `Autocomplete` (`multiple`, `freeSolo`) with chips. Enter, comma, Tab or blur turns the typed text into a chip; an invalid chip shows in error colour.
+- Message: multiline, 6 rows, counter "{n}/2000".
+- Last emailed: shown only when there is one; dates and times in the company format.
+
+### 3. Field rules and errors (under the field)
+| Field | Rule | Error |
+|---|---|---|
+| To | 1–10 valid addresses | "Add at least one email address" · "Use up to 10 addresses" · "Enter a valid email address: {address}" |
+| CC | 0–10 valid addresses | "Use up to 10 addresses" · "Enter a valid email address: {address}" |
+| Subject | required, max 200 | "Enter a subject" · "Use up to 200 characters" |
+| Message | max 2000 | "Use up to 2000 characters" |
+
+### 4. Feedback states
+| State | What the user sees |
+|---|---|
+| Opening | Skeleton fields in the dialog (`role="status"`) |
+| Load error | "We couldn't load the email details." + Retry |
+| Vendor has no email | Info alert "This vendor has no email. Add one in Vendor, or type an address."; Send disabled while To is empty |
+| Sending | Send button spinner, fields and Cancel disabled, ✕ disabled |
+| Success | Dialog closes; snackbar "Purchase order emailed to vendor" |
+| API refusal / send failure | Error alert at the top of the dialog with the API message; what was typed stays |
+| Close with changes | "Discard changes?" · "What you typed will be lost." · Keep editing / Discard |
+
+### 5. Responsive
+xs (360): full-screen dialog; chips wrap. sm+: 600 px wide. No page scroll sideways.
+
+### 6. Accessibility
+Labelled fields; errors tied with `aria-describedby`; the alert uses `role="alert"`; focus starts in To; Esc asks the discard question when there are changes.
+
+### 7. Shared components
+`ModalActionButton`, `ConfirmDialog`, `CustomTooltip`, MUI `Autocomplete` / `Chip` / `Alert`. Theme tokens only.
+
+### 8. Permissions
+`create_purchase_order` shows the action; the API checks it again.
+
+### 9. Template impact
+None on `src/theme/*` or shared components.
+
+### 10. UI acceptance criteria
+1. The action shows only on Submitted POs and only with the permission.
+2. Every state in §4 shows the exact text.
+3. The dialog fits at 360 px, and the page doesn't scroll sideways at any width up to 1920 px.
+4. A double click on Send sends one email.

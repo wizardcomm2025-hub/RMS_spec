@@ -204,6 +204,8 @@
       <section class="surface client"><h3>Integrations <span class="tag">external</span></h3><p>Tally stock sync flag set as today.</p></section>
       <section class="surface client"><h3>Admin dashboard <span class="tag">client</span></h3><p><a href="./ui-ux.md"><code>ui-ux.md</code></a>. Stock Check page rebuilt. Tester cases: <a href="./test-cases/README.md"><code>test-cases/</code></a>.</p></section>
     </div>
+    <h2>Times in UTC, shown in IST (use case 03, 2026-11-18)</h2>
+    <p>Stock Check is the pilot for the platform rule "save with <code>GETUTCDATE()</code>, show in IST". <code>Sp_SaveStockCounts</code> stamps new <code>StockCheck</code> rows in UTC and gives the ledger the IST date. The report and dashboard turn IST days into UTC ranges (−330 minutes). The UI reads the times as UTC with <code>utcToIst()</code> (<code>src/utils/ist-time.ts</code>). Older rows are not converted.</p>
   </main>
 </body>
 </html>

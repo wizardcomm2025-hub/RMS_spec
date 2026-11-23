@@ -12,3 +12,6 @@ All `POST`, `{ Status, Message, Data }`, company and user from the token, `[Comp
 Messages (`status: false`): `Select a location` · `Enter a count for at least one item` · `Counts can't be negative` · `{item} can't be counted in {uom}` · `One or more items aren't available at this location` · `You don't have permission to perform this action.` · `Something went wrong. Please try again.`. 401 for no / invalid / SuperAdmin token.
 
 Success: "{n} counts saved" / "{item} count saved".
+
+## Times (use case 03, 2026-11-18)
+No endpoint or shape change. `lastCountAt` (`GetStockCheckSheet`) and `countedAt` (`GetStockCheckReport`) are now **UTC** for rows saved after the change, still sent without an offset (`"2026-11-18T10:00:00"`); the client must read them as UTC. `fromDate` / `toDate` stay IST calendar days.
